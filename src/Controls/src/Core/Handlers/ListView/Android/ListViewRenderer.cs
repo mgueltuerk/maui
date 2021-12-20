@@ -242,6 +242,8 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 		//	}
 		//}
 
+		
+
 		void OnScrollToRequested(object sender, ScrollToRequestedEventArgs e)
 		{
 			if (!_isAttached)

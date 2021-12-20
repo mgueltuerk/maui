@@ -5,14 +5,19 @@
     xmlns:views="clr-namespace:Maui.Controls.Sample.Pages.Base"
     Title="ListView">
     <views:BasePage.Content>
-        <VerticalStackLayout
+        <Grid
             Margin="12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
             <Label
                 Text="Basic"
                 Style="{StaticResource Headline}"/>
             <ListView 
                 x:Name="BasicListView" 
-			    ItemTapped="OnItemTapped">
+			    ItemTapped="OnItemTapped"
+                Grid.Row="1">
                 <ListView.ItemsSource>
                     <x:Array Type="{x:Type x:String}">
                         <x:String>Item 1</x:String>
@@ -21,6 +26,6 @@
                     </x:Array>
                 </ListView.ItemsSource>
             </ListView>
-        </VerticalStackLayout>
+        </Grid>
     </views:BasePage.Content>
 </views:BasePage>

@@ -91,5 +91,18 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 		{
 
 		}
+
+		public override Size GetDesiredSize(double widthConstraint, double heightConstraint)
+		{
+			var size =  base.GetDesiredSize(widthConstraint, heightConstraint);
+			var minimumSize = MinimumSize();
+
+			if(size.Height < minimumSize.Height || size.Width < minimumSize.Width)
+			{
+				return new Size(Math.Max(size.Width, minimumSize.Width), Math.Max(size.Height, minimumSize.Height));
+			}
+
+			return size;
+		}
 	}
 }

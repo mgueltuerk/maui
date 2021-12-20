@@ -73,9 +73,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 
 		void UpdateFlowDirection()
 		{
-			// TODO MAUI: Is it ok for parentview to be null?
-			if (ParentView != null)
-				View.UpdateFlowDirection(ParentView);
+			View.UpdateFlowDirection(ParentView);
 		}
 
 		void UpdateMainText()

@@ -1,3 +1,4 @@
+using System;
 using Android.Content;
 using Android.Views;
 using Microsoft.Maui.Controls.Internals;
@@ -13,11 +14,14 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 			CellRenderer renderer = CellRenderer.GetRenderer(item);
 			if (renderer == null)
 			{
-				var mauiConext = view.FindMauiContext() ?? item.FindMauiContext();
-				_ = item.ToNative(mauiConext, true);
+				var mauiContext = view.FindMauiContext() ?? item.FindMauiContext();
+
+				if (convertView != null)
+					mauiContext = mauiContext.MakeScopededArgs(convertView);
+
+				_ = item.ToNative(mauiContext);
 
 				renderer = CellRenderer.GetRenderer(item);
-				renderer.ParentView = view;
 			}
 
 			AView result = renderer.GetCell(item, convertView, parent, context);

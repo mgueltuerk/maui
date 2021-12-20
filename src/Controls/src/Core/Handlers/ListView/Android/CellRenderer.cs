@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Internals;
 using AView = Android.Views.View;
 using Object = Java.Lang.Object;
@@ -25,18 +26,22 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 
 		protected override AView CreateNativeElement()
 		{
-			//TODO MAUI figure out convertView and parent
-			return GetCell(VirtualView, null, null, (MauiContext.Context));
+			var creationArgs = MauiContext.Services.GetService<AView>();
+			return GetCell(VirtualView, creationArgs, null, (MauiContext.Context));
 		}
 
 		public AView GetCell(Cell item, AView convertView, ViewGroup parent, Context context)
 		{
+			if (item.Parent is View parentView)
+				ParentView = parentView;
+
+			if (parent == null && ParentView?.Handler?.NativeView is ViewGroup platformParent)
+				parent = platformParent;
+
 			Performance.Start(out string reference);
 
 			Cell = item;
 			Cell.PropertyChanged -= PropertyChangedHandler;
-
-			//SetRenderer(Cell, this);
 
 			if (convertView != null)
 			{
@@ -51,7 +56,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 
 					if (Cell != oldCell)
 					{
-						//SetRenderer(oldCell, null);
+						oldCell.Handler = null;
 					}
 				}
 			}
