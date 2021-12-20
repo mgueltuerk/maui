@@ -13,7 +13,10 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 			CellRenderer renderer = CellRenderer.GetRenderer(item);
 			if (renderer == null)
 			{
-				renderer = Registrar.Registered.GetHandlerForObject<CellRenderer>(item);
+				var mauiConext = view.FindMauiContext() ?? item.FindMauiContext();
+				_ = item.ToNative(mauiConext, true);
+
+				renderer = CellRenderer.GetRenderer(item);
 				renderer.ParentView = view;
 			}
 

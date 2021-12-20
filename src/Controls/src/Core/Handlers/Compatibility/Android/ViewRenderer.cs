@@ -16,8 +16,11 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 		where TElement : Element, IView
 		where TNativeView : PlatformView
 	{
-		public TElement? Element { get; private set; }
-		public TNativeView? Control { get; private set; }
+
+		// The casts here are to get around the fact that if you access VirtualView
+		// before it's been initialized you'll get an exception
+		public TElement? Element => ((IElementHandler)this).VirtualView as TElement;
+		public TNativeView? Control => ((IElementHandler)this).NativeView as TNativeView;
 
 		public IViewParent? Parent => Control?.Parent;
 

@@ -57,7 +57,7 @@ namespace Microsoft.Maui.Controls.Hosting
 			{ typeof(Window), typeof(WindowHandler) },
 			{ typeof(ImageButton), typeof(ImageButtonHandler) },
 			{ typeof(IndicatorView), typeof(IndicatorViewHandler) },
-#if __ANDROID__ || __IOS__
+#if ANDROID || __IOS__
 			{ typeof(RefreshView), typeof(RefreshViewHandler) },
 			
 #endif
@@ -65,10 +65,16 @@ namespace Microsoft.Maui.Controls.Hosting
 			{ typeof(NavigationPage), typeof(NavigationViewHandler) },
 			{ typeof(Toolbar), typeof(ToolbarHandler) },
 #endif
-#if __ANDROID__
+#if ANDROID
 			{ typeof(TabbedPage), typeof(Controls.Handlers.TabbedPageHandler) },
 			{ typeof(FlyoutPage), typeof(FlyoutViewHandler) },
 			{ typeof(ListView), typeof(Controls.Handlers.Compatibility.ListViewRenderer) },
+			{ typeof(Cell), typeof(Controls.Handlers.Compatibility.CellRenderer) },
+			{ typeof(ImageCell), typeof(Handlers.Compatibility.ImageCellRenderer) },
+			{ typeof(EntryCell), typeof(Handlers.Compatibility.EntryCellRenderer) },
+			{ typeof(TextCell), typeof(Handlers.Compatibility.TextCellRenderer) },
+			{ typeof(ViewCell), typeof(Handlers.Compatibility.ViewCellRenderer) },
+			{ typeof(SwitchCell), typeof(Handlers.Compatibility.SwitchCellRenderer) },
 #endif
 		};
 

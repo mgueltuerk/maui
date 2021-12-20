@@ -9,17 +9,25 @@ using Object = Java.Lang.Object;
 
 namespace Microsoft.Maui.Controls.Handlers.Compatibility
 {
-	public class CellRenderer : IRegisterable
+	public class CellRenderer : ElementHandler<Cell, AView>, IRegisterable
 	{
 		static readonly PropertyChangedEventHandler PropertyChangedHandler = OnGlobalCellPropertyChanged;
 
-		static readonly BindableProperty RendererProperty = BindableProperty.CreateAttached("Renderer", typeof(CellRenderer), typeof(Cell), null);
-
 		EventHandler _onForceUpdateSizeRequested;
+
+		public CellRenderer() : base(ElementHandler.ElementMapper)
+		{
+		}
 
 		public View ParentView { get; set; }
 
 		protected Cell Cell { get; set; }
+
+		protected override AView CreateNativeElement()
+		{
+			//TODO MAUI figure out convertView and parent
+			return GetCell(VirtualView, null, null, (MauiContext.Context));
+		}
 
 		public AView GetCell(Cell item, AView convertView, ViewGroup parent, Context context)
 		{
@@ -28,7 +36,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 			Cell = item;
 			Cell.PropertyChanged -= PropertyChangedHandler;
 
-			SetRenderer(Cell, this);
+			//SetRenderer(Cell, this);
 
 			if (convertView != null)
 			{
@@ -43,7 +51,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 
 					if (Cell != oldCell)
 					{
-						SetRenderer(oldCell, null);
+						//SetRenderer(oldCell, null);
 					}
 				}
 			}
@@ -107,14 +115,9 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 			cellController.ForceUpdateSizeRequested += _onForceUpdateSizeRequested;
 		}
 
-		internal static CellRenderer GetRenderer(BindableObject cell)
+		internal static CellRenderer GetRenderer(Cell cell)
 		{
-			return (CellRenderer)cell.GetValue(RendererProperty);
-		}
-
-		internal static void SetRenderer(BindableObject cell, CellRenderer renderer)
-		{
-			cell.SetValue(RendererProperty, renderer);
+			return (CellRenderer)cell.Handler;
 		}
 
 		static void OnGlobalCellPropertyChanged(object sender, PropertyChangedEventArgs e)

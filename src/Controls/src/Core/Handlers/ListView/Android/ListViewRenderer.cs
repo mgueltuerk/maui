@@ -49,7 +49,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 		ScrollBarVisibility _defaultHorizontalScrollVisibility = 0;
 		ScrollBarVisibility _defaultVerticalScrollVisibility = 0;
 
-		public ListViewRenderer(IPropertyMapper mapper) : base(ViewHandler.ViewMapper)
+		public ListViewRenderer() : base(ViewHandler.ViewMapper)
 		{
 		}
 
@@ -86,7 +86,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 			return new AListView(Context);
 		}
 
-		public override bool NeedsContainer => true;
+		public override bool NeedsContainer => false;
 
 		protected override void SetupContainer()
 		{
@@ -103,11 +103,10 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 			{
 				_refresh = CreateNativePullToRefresh(Context);
 				_refresh.SetOnRefreshListener(new ListViewSwipeRefreshLayoutListener(this));
-				_refresh.AddView(NativeView, new LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent));
 				ContainerView = _refresh;
 			}
 
-			_refresh.AddView(NativeView);
+			_refresh.AddView(NativeView, new LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent));
 
 			if (oldIndex is int idx && idx >= 0)
 				oldParent?.AddView(ContainerView, idx);
