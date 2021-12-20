@@ -29,7 +29,18 @@ namespace Maui.Controls.Sample.Pages
 					{
 						new Label()
 						{
-							Text = "Menu Item 1"
+							Text = "Menu Item 1",
+							GestureRecognizers =
+							{
+								new TapGestureRecognizer()
+								{
+									Command = new Command(() =>
+									{
+
+									}),
+									NumberOfTapsRequired = 1,
+								}
+							}
 						},
 						new Label()
 						{

@@ -1,0 +1,92 @@
+﻿#nullable enable
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
+using Microsoft.Maui.Controls.Platform;
+using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Handlers;
+using AView = Android.Views.View;
+using IViewParent = Android.Views.IViewParent;
+using PlatformView = Android.Views.View;
+
+namespace Microsoft.Maui.Controls.Handlers.Compatibility
+{
+	public partial class ViewRenderer<TElement, TNativeView> : ViewHandler<TElement, TNativeView>
+		where TElement : Element, IView
+		where TNativeView : PlatformView
+	{
+		public TElement? Element { get; private set; }
+		public TNativeView? Control { get; private set; }
+
+		public IViewParent? Parent => Control?.Parent;
+
+		public ViewRenderer(IPropertyMapper mapper) : base(ViewHandler.ViewMapper)
+		{
+		}
+
+		protected override TNativeView CreateNativeView()
+		{
+			throw new NotImplementedException();
+		}
+
+
+		private protected override void OnConnectHandler(AView nativeView)
+		{
+			base.OnConnectHandler(nativeView);
+			nativeView.ViewAttachedToWindow += OnViewAttachedToWindow;
+			nativeView.ViewDetachedFromWindow += OnViewDetatchedFromWindow;
+		}
+		private protected override void OnDisconnectHandler(AView nativeView)
+		{
+			base.OnDisconnectHandler(nativeView);
+			nativeView.ViewAttachedToWindow -= OnViewAttachedToWindow;
+			nativeView.ViewDetachedFromWindow -= OnViewDetatchedFromWindow;
+		}
+
+		public override void SetVirtualView(IView view)
+		{
+			var oldElement = Element;
+			base.SetVirtualView(view);
+			OnElementChanged(new ElementChangedEventArgs<TElement>(oldElement, Element));
+		}
+
+		void OnViewDetatchedFromWindow(object? sender, AView.ViewDetachedFromWindowEventArgs e) => OnDetachedFromWindow();
+
+		void OnViewAttachedToWindow(object? sender, AView.ViewAttachedToWindowEventArgs e) => OnAttachedToWindow();
+
+
+
+		protected virtual void OnAttachedToWindow()
+		{
+
+		}
+
+		protected virtual void OnDetachedFromWindow()
+		{
+
+		}
+
+		protected virtual Size MinimumSize()
+		{
+			return new Size();
+		}
+
+		protected virtual void OnElementChanged(ElementChangedEventArgs<TElement> e)
+		{
+
+		}
+
+
+		public override void UpdateValue(string property)
+		{
+			base.UpdateValue(property);
+			OnElementPropertyChanged(VirtualView, new PropertyChangedEventArgs(property));
+		}
+
+		protected virtual void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+
+		}
+	}
+}
