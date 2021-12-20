@@ -155,9 +155,6 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 				nativeListView.DividerHeight = 0;
 				nativeListView.Focusable = false;
 				nativeListView.DescendantFocusability = DescendantFocusability.AfterDescendants;
-				
-				//TODO MAUI
-				//nativeListView.OnFocusChangeListener = this;
 				nativeListView.Adapter = _adapter = e.NewElement.IsGroupingEnabled && e.NewElement.OnThisPlatform().IsFastScrollEnabled() ? new GroupedListViewAdapter(Context, nativeListView, e.NewElement) : new ListViewAdapter(Context, nativeListView, e.NewElement);
 				_adapter.HeaderView = _headerView;
 				_adapter.FooterView = _footerView;
@@ -230,19 +227,17 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 				UpdateVerticalScrollBarVisibility();
 		}
 
-		// TODO MAUI:
-		//protected override void OnLayout(bool changed, int l, int t, int r, int b)
-		//{
-		//	base.OnLayout(changed, l, t, r, b);
 
-		//	if (_pendingScrollTo != null)
-		//	{
-		//		OnScrollToRequested(this, _pendingScrollTo);
-		//		_pendingScrollTo = null;
-		//	}
-		//}
+		public override void NativeArrange(Rectangle frame)
+		{
+			base.NativeArrange(frame);
 
-		
+			if (_pendingScrollTo != null)
+			{
+				OnScrollToRequested(this, _pendingScrollTo);
+				_pendingScrollTo = null;
+			}
+		}
 
 		void OnScrollToRequested(object sender, ScrollToRequestedEventArgs e)
 		{
