@@ -227,6 +227,45 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 				UpdateVerticalScrollBarVisibility();
 		}
 
+		public override Size GetDesiredSize(double widthConstraint, double heightConstraint)
+		{
+			if (double.IsInfinity(heightConstraint))
+			{
+				if (VirtualView.RowHeight > -1)
+				{
+					heightConstraint = (int)(_adapter.Count * VirtualView.RowHeight);
+				}
+				else if(_adapter != null)
+				{
+					double totalHeight = 0;
+					int adapterCount = _adapter.Count;
+					for (int i = 0; i < adapterCount; i++)
+					{
+						var cell = _adapter.GetCellsFromPosition(i, 1)[0];
+						if(cell.Height > -1)
+						{
+							totalHeight += cell.Height;
+							continue;
+						}
+
+						AView listItem = _adapter.GetView(i, null, NativeView);
+						int widthSpec;
+
+						if (double.IsInfinity(widthConstraint))
+							widthSpec = MeasureSpecMode.Unspecified.MakeMeasureSpec(0);
+						else
+							widthSpec = MeasureSpecMode.AtMost.MakeMeasureSpec((int)Context.ToPixels(widthConstraint));
+
+						listItem.Measure(widthSpec, MeasureSpecMode.Unspecified.MakeMeasureSpec(0));
+						totalHeight += Context.FromPixels(listItem.MeasuredHeight);
+					}
+
+					heightConstraint = totalHeight;
+				}
+			}
+
+			return base.GetDesiredSize(widthConstraint, heightConstraint);
+		}
 
 		public override void NativeArrange(Rectangle frame)
 		{

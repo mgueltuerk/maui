@@ -521,7 +521,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 
 		// TODO: We can optimize this by storing the last position, group index and global index
 		// and increment/decrement from that starting place.	
-		List<Cell> GetCellsFromPosition(int position, int take)
+		internal List<Cell> GetCellsFromPosition(int position, int take)
 		{
 			var cells = new List<Cell>(take);
 			if (position < 0)
