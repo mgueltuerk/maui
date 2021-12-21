@@ -132,7 +132,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 		public void SetDefaultMainTextColor(Color defaultColor)
 		{
 			_defaultMainTextColor = defaultColor;
-			if (_mainTextColor == null)
+			if (_mainTextColor == null && defaultColor != null)
 				_mainText.SetTextColor(defaultColor.ToNative());
 		}
 
@@ -184,7 +184,12 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 			if (source == previousSource)
 				return;
 
-			source.LoadImage(_cell.Handler.MauiContext, (drawable) =>
+			if(source == null)
+			{
+				_imageView.SetImageDrawable(null);
+			}
+
+			source.LoadImage(_cell.FindMauiContext(), (drawable) =>
 			{
 				_imageView.SetImageDrawable(drawable?.Value);
 			});

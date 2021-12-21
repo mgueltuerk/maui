@@ -10,19 +10,16 @@ namespace Maui.Controls.Sample.ViewModels
 	{
 		protected override IEnumerable<SectionModel> CreateItems() => new[]
 		{
-			new SectionModel(typeof(CarouselViewPage), "RefreshView",
-				""),
 			new SectionModel(typeof(ListViewEntryCell), "Entry Cell",
-				""),
-			new SectionModel(typeof(CarouselViewPage), "Text Cell",
-				""),
-			new SectionModel(typeof(CarouselViewPage), "Image Cell",
-				""),
-			new SectionModel(typeof(CarouselViewPage), "Switch Cell",
-				""),
-			new SectionModel(typeof(CarouselViewPage), "View Cell",
-				""),
-
+				"EntryCell controls are used to present text data that the user can edit."),
+			new SectionModel(typeof(ListViewImageCell), "Image Cell",
+				"ImageCell controls are similar to TextCells but include an image to the left of the text."),
+			new SectionModel(typeof(ListViewRefresh), "RefreshView",
+				"Pull-to-refresh allows the user to pull the ListView down to refresh the contents"),
+			new SectionModel(typeof(ListViewSwitchCell), "Switch Cell",
+				"SwitchCell controls are used to present and capture on/off or true/false states."),
+			new SectionModel(typeof(ListViewTextCell), "Text Cell",
+				"TextCell controls are used for displaying text with an optional second line for detail text."),
 		};
 	}
 }

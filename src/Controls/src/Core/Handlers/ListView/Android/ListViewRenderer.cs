@@ -16,24 +16,11 @@ using LayoutParams = Android.Views.ViewGroup.LayoutParams;
 
 namespace Microsoft.Maui.Controls.Handlers.Compatibility
 {
-	class ListViewSwipeRefreshLayoutListener : Java.Lang.Object, SwipeRefreshLayout.IOnRefreshListener
-	{
-		readonly ListViewRenderer _listViewRenderer;
-
-		public ListViewSwipeRefreshLayoutListener(ListViewRenderer listViewRenderer)
-		{
-			_listViewRenderer = listViewRenderer;
-		}
-
-		public void OnRefresh()
-		{
-			IListViewController controller = _listViewRenderer.Element;
-			controller.SendRefreshing();
-		}
-	}
-
 	public class ListViewRenderer : ViewRenderer<ListView, AListView>
 	{
+		public static PropertyMapper<ListView, ListViewRenderer> Mapper =
+				new PropertyMapper<ListView, ListViewRenderer>(ViewMapper);
+
 		ListViewAdapter _adapter;
 		INativeViewHandler _headerRenderer;
 		INativeViewHandler _footerRenderer;
@@ -49,7 +36,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 		ScrollBarVisibility _defaultHorizontalScrollVisibility = 0;
 		ScrollBarVisibility _defaultVerticalScrollVisibility = 0;
 
-		public ListViewRenderer() : base(ViewHandler.ViewMapper)
+		public ListViewRenderer() : base(Mapper)
 		{
 		}
 
@@ -86,7 +73,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 			return new AListView(Context);
 		}
 
-		public override bool NeedsContainer => false;
+		public override bool NeedsContainer => true;
 
 		protected override void SetupContainer()
 		{
@@ -140,14 +127,11 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 			if (e.NewElement != null)
 			{
 				AListView nativeListView = Control;
-				if (nativeListView == null)
-				{
-					var ctx = Context;
-					_headerView = new Container(ctx);
-					nativeListView.AddHeaderView(_headerView, null, false);
-					_footerView = new Container(ctx);
-					nativeListView.AddFooterView(_footerView, null, false);
-				}
+				var ctx = Context;
+				_headerView = new Container(ctx);
+				nativeListView.AddHeaderView(_headerView, null, false);
+				_footerView = new Container(ctx);
+				nativeListView.AddFooterView(_footerView, null, false);
 
 				((IListViewController)e.NewElement).ScrollToRequested += OnScrollToRequested;
 				Control?.SetOnScrollListener(new ListViewScrollDetector(this));
@@ -235,14 +219,14 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 				{
 					heightConstraint = (int)(_adapter.Count * VirtualView.RowHeight);
 				}
-				else if(_adapter != null)
+				else if (_adapter != null)
 				{
 					double totalHeight = 0;
 					int adapterCount = _adapter.Count;
 					for (int i = 0; i < adapterCount; i++)
 					{
 						var cell = _adapter.GetCellsFromPosition(i, 1)[0];
-						if(cell.Height > -1)
+						if (cell.Height > -1)
 						{
 							totalHeight += cell.Height;
 							continue;
@@ -343,7 +327,7 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 				{
 					AView view = _adapter.GetView(scrollPosition, null, null);
 
-					
+
 					view.Measure(MeasureSpecMode.AtMost.MakeMeasureSpec(Control.Width), MeasureSpecMode.Unspecified.MakeMeasureSpec(0));
 					cellHeight = view.MeasuredHeight;
 				}
@@ -532,11 +516,22 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 
 			protected override void OnLayout(bool changed, int l, int t, int r, int b)
 			{
+				if (_child?.NativeView == null)
+				{
+					return;
+				}
+
 				_child.NativeView.Layout(l, t, r, b);
 			}
 
 			protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 			{
+				if (_child?.NativeView == null)
+				{
+					SetMeasuredDimension(0, 0);
+					return;
+				}
+
 				_child.NativeView.Measure(widthMeasureSpec, heightMeasureSpec);
 				SetMeasuredDimension(_child.NativeView.MeasuredWidth, _child.NativeView.MeasuredHeight);
 			}
@@ -590,6 +585,23 @@ namespace Microsoft.Maui.Controls.Handlers.Compatibility
 				_nestedScrollCalled = true;
 			}
 		}
+
+		class ListViewSwipeRefreshLayoutListener : Java.Lang.Object, SwipeRefreshLayout.IOnRefreshListener
+		{
+			readonly ListViewRenderer _listViewRenderer;
+
+			public ListViewSwipeRefreshLayoutListener(ListViewRenderer listViewRenderer)
+			{
+				_listViewRenderer = listViewRenderer;
+			}
+
+			public void OnRefresh()
+			{
+				IListViewController controller = _listViewRenderer.Element;
+				controller.SendRefreshing();
+			}
+		}
+
 		class ListViewScrollDetector : Java.Lang.Object, AbsListView.IOnScrollListener
 		{
 			class TrackElement
